@@ -81,3 +81,18 @@ npm run build   # type-check and build main.js
 npm run dev     # rebuild main.js on every change
 npm test        # run the calculator tests
 ```
+
+## Releasing
+
+Releases use [semantic versioning](https://semver.org) with no `v` prefix, such as `1.2.3`, because Obsidian expects the tag to match the version in `manifest.json` exactly.
+
+```sh
+npm version patch   # bug fixes: 1.0.0 → 1.0.1
+npm version minor   # new features: 1.0.0 → 1.1.0
+npm version major   # breaking changes: 1.0.0 → 2.0.0
+npm version prerelease --preid beta   # test builds: 1.0.0 → 1.0.1-beta.0
+
+git push --follow-tags
+```
+
+`npm version` updates `package.json`, `manifest.json`, and `versions.json`, then commits and tags the new version. Pushing the tag starts the release workflow. It checks that the tag matches the plugin version, runs the tests, builds the plugin, and publishes a GitHub release with `main.js` and `manifest.json` attached. Versions with a label, such as `1.0.1-beta.0`, are published as prereleases.

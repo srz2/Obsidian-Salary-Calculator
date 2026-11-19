@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Check tag matches the plugin version
+        id: tag
+        run: node scripts/check-release-tag.mjs "$TAG"
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+      # Obsidian installs plugins from these release assets, and expects the release to be named by its tag.
+      - name: Publish release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRERELEASE_FLAG: ${{ steps.tag.outputs.prerelease == 'true' && '--prerelease' || '' }}
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" main.js manifest.json --clobber
+          else
+            gh release create "$TAG" main.js manifest.json \
+              --title "$TAG" --generate-notes --verify-tag $PRERELEASE_FLAG
+          fi
