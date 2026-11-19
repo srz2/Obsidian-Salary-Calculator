@@ -1,0 +1,10 @@
+{
+	"id": "salary-calculator",
+	"name": "Salary Calculator",
+	"version": "1.0.0",
+	"minAppVersion": "1.0.0",
+	"description": "Turn an hourly rate or annual salary into an hourly, daily, weekly, monthly, quarterly, and annual pay table.",
+	"authorUrl": "https://stevenzilberberg.com",
+	"fundingUrl": "https://www.buymeacoffee.com/kvnfnpycl",
+	"isDesktopOnly": false
+}
